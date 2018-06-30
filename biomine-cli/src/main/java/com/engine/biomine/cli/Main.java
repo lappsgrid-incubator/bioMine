@@ -18,16 +18,21 @@ import java.util.Stack;
  */
 @Command(name = "biomine-cli",
 		description = "Index PubMed or PubMed Central.",
+		optionListHeading = "OPTIONS",
+		sortOptions = false,
 		footer = "Copyright 2018 The Language Applications Grid"
 )
 public class Main implements Runnable
 {
 	@Option(names={"-p", "--path"},
 			required = true,
+			paramLabel = "PATH",
 			description = "root directory of the corpus to index")
 	private String path = null;
 
-	@Option(names = "-n", description = "number of files to process")
+	@Option(names = "-n",
+			paramLabel = "SIZE",
+			description = "number of files to process")
 	private int size = Integer.MAX_VALUE;
 
 	private IndexManager indexer = new IndexManager();
