@@ -3,6 +3,8 @@
 .project
 /.settings/
 
+.m2/
+
 # IntelliJ
 *.iml
 *.ipr
