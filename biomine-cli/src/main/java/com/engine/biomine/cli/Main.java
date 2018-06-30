@@ -27,6 +27,9 @@ public class Main implements Runnable
 			description = "root directory of the corpus to index")
 	private String path = null;
 
+	@Option(names = "-n", description = "number of files to process")
+	private int size = Integer.MAX_VALUE;
+
 	private IndexManager indexer = new IndexManager();
 
 	public Main()
@@ -61,12 +64,16 @@ public class Main implements Runnable
 
 	private void index(File root) {
 		Deque<File> stack = new ArrayDeque<>();
-
+		int count = 0;
 		stack.push(root);
 		while (!stack.isEmpty()) {
 			File entry = stack.pop();
 			if (entry.isFile() && entry.getName().endsWith(".nxml")) {
 				indexer.pushData(entry, false, "literature");
+				if (++count > size) {
+					// User specified limit has been reached.
+					return;
+				}
 			}
 			else if (entry.isDirectory()) {
 				for (File file : entry.listFiles()) {

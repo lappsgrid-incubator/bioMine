@@ -13,6 +13,7 @@
         <module>biomine-index</module>
         <module>biomine-evaluation</module>
         <module>biomine-service</module>
+        <module>biomine-cli</module>
     </modules>
     
     <properties>
