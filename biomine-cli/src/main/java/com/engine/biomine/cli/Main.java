@@ -17,7 +17,7 @@ import java.util.Stack;
  *
  */
 @Command(name = "biomine-cli",
-		description = "Index PubMed or PubMed Central.",
+		description = "Recrsively scan a directory tree and index PubMed or PubMed Central articles found.",
 		optionListHeading = "OPTIONS",
 		sortOptions = false,
 		footer = "Copyright 2018 The Language Applications Grid"
@@ -26,11 +26,11 @@ public class Main implements Runnable
 {
 	@Option(names={"-p", "--path"},
 			required = true,
-			paramLabel = "PATH",
+			paramLabel = "directory",
 			description = "root directory of the corpus to index")
 	private String path = null;
 
-	@Option(names = "-n",
+	@Option(names = {"-n", "--number"},
 			paramLabel = "SIZE",
 			description = "number of files to process")
 	private int size = Integer.MAX_VALUE;
@@ -60,7 +60,8 @@ public class Main implements Runnable
 			}
 			catch (InterruptedException e)
 			{
-				System.out.println("Process has been interrupted.");
+				System.out.println("Processing has been interrupted.");
+				// Signal the while loop to terminate.
 				n = 0;
 			}
 		}
