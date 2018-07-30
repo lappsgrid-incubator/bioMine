@@ -14,5 +14,3 @@ To use one of the schemas,
 manageIndex.py
 Utility script to manage a solr server. Allows to do basic operation to a solr cluster (e.g. add/remove a shard from the cluster, remove all documents in the index, etc.). WARNING!!! manageIndex.py works for solr-cloud mode only. You need to use and configure zookeeper to keep the configuration.
 
-
-
