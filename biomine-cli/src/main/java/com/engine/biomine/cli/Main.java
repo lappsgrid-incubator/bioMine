@@ -74,7 +74,7 @@ public class Main implements Runnable
 		stack.push(root);
 		while (!stack.isEmpty()) {
 			File entry = stack.pop();
-			if (entry.isFile() && entry.getName().endsWith(".nxml")) {
+			if (accept(entry)) {
 				indexer.pushData(entry, false, "literature");
 				if (++count > size) {
 					// User specified limit has been reached.
@@ -87,6 +87,14 @@ public class Main implements Runnable
 				}
 			}
 		}
+	}
+
+	private boolean accept(File file) {
+		if (file.isFile()) {
+			String name = file.getName();
+			return name.endsWith(".xml") || name.endsWith(".nxml");
+		}
+		return false;
 	}
 
 	public static void main(String[] args) {
