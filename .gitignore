@@ -10,3 +10,9 @@
 *.ipr
 *.iws
 .idea/
+
+*.log
+log/
+solr/*.out
+.bash_history
+*~
