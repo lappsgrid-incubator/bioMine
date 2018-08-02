@@ -14,9 +14,9 @@ while [[ -n "$1" ]] ; do
 	    if [[ -e $LOG ]] ; then rm $LOG ; fi
 	    ;;
 	solr)
-	    cd /usr/local/solr-6.6.0
+	    cd /usr/local/solr-7.4.0
 	    echo "Starting solr"
-	    sudo -u solr bin/solr start -cloud -p 8983 -s example/cloud/node1/solr
+	    sudo -u solr bin/solr start -cloud -p 8983 
 	    cd -
 	    ;;
 	*)
@@ -28,7 +28,7 @@ while [[ -n "$1" ]] ; do
 done
 
 echo "Starting BioMine"
-sudo -u biomine nohup java -Xmx8G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
+sudo -u biomine nohup java -Xmx4G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
 
 tail -f /usr/local/biomine/biomine.log
 
