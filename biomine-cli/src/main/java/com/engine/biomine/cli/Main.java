@@ -75,6 +75,7 @@ public class Main implements Runnable
 		while (!stack.isEmpty()) {
 			File entry = stack.pop();
 			if (accept(entry)) {
+				System.out.println("Indexing " + entry.getPath());
 				indexer.pushData(entry, false, "literature");
 				if (++count > size) {
 					// User specified limit has been reached.
