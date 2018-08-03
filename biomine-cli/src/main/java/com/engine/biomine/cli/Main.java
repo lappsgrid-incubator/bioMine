@@ -5,6 +5,7 @@ import com.engine.biomine.indexing.IndexerStatus;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -26,11 +27,20 @@ import java.util.concurrent.Future;
 )
 public class Main implements Runnable
 {
-	@Option(names={"-p", "--path"},
-			required = true,
-			paramLabel = "directory",
-			description = "root directory of the corpus to index")
-	private String path = null;
+//	@Option(names={"-p", "--path"},
+//			required = true,
+//			paramLabel = "directory",
+//			description = "root directory of the corpus to index")
+//	private String path = null;
+
+	@Parameters
+	private List<String> paths;
+
+	@Option(names={"-c", "--collection"},
+			paramLabel = "COLLECTION",
+			required = false,
+			description = "collection documents will be added to")
+	private String collection;
 
 	@Option(names = {"-n", "--number"},
 			paramLabel = "SIZE",
@@ -57,12 +67,32 @@ public class Main implements Runnable
 	}
 
 	public void run() {
-		File root = new File(path);
-		if (!root.exists()) {
-			System.out.println("That path does not exist.");
+		if (paths.size() == 0) {
+			System.out.println("No paths to index.");
 			return;
 		}
 		indexer = new IndexManager();
+		for (String path : paths) {
+			File root = new File(path);
+			if (!root.exists()) {
+				System.out.println("That path does not exist.");
+				return;
+			}
+			try
+			{
+				index(root);
+			}
+			catch (ExecutionException e)
+			{
+				throw new RuntimeException(e);
+			}
+			catch (InterruptedException e)
+			{
+				Thread.currentThread().interrupt();
+				return;
+			}
+		}
+		/*
 		List<Future<Boolean>> tasks = index(root);
 		try {
 			for (Future<Boolean> task : tasks) {
@@ -79,6 +109,8 @@ public class Main implements Runnable
 		finally {
 			System.out.println("Done.");
 		}
+		*/
+
 //		IndexerStatus status = indexer.getStatus();
 //		long n = status.getNbDocsToProcess();
 //		while (n > 0) {
@@ -97,7 +129,23 @@ public class Main implements Runnable
 //		}
 	}
 
-	private List<Future<Boolean>> index(File root) {
+	private void index(File root) throws ExecutionException, InterruptedException
+	{
+		if (root.isDirectory()) {
+			for (File child : root.listFiles()) {
+				index(child);
+			}
+		}
+		else {
+			System.out.println("Indexing " + root.getPath());
+			List<Future<Boolean>> tasks = indexer.pushData(root, false, "literatoru");
+			System.out.printf("Waiting for %d tasks\n", tasks.size());
+			for (Future<Boolean> task : tasks) {
+				task.get();
+			}
+		}
+	}
+	private List<Future<Boolean>> indexWithStack(File root) {
 		Deque<File> stack = new ArrayDeque<>();
 		stack.push(root);
 		List<Future<Boolean>> tasks = new ArrayList<>();
