@@ -18,6 +18,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
@@ -88,9 +89,10 @@ public class IndexManager {
      * push doc to the index
      * @param
      */
-    public void pushData(File file, boolean deleteFile, String collection) {
-
-        File[] fileList = null;
+    public List<Future<Boolean>> pushData(File file, boolean deleteFile, String collection) {
+        logger.info("Pushing data for {}", file.getPath());
+        //File[] fileList = null;
+        List<Future<Boolean>> futures = new ArrayList<>();
 
         Deque<File> q = new ArrayDeque<File>();
         q.addLast(file);
@@ -102,10 +104,13 @@ public class IndexManager {
                 }
             }
             else {
+                logger.debug("Submiting index task for {}", entry.getPath());
                 IndexDocsTask indexTask = new IndexDocsTask(this, new File[] {entry}, deleteFile, collection, indexerStats);
-                executor.submit(indexTask);
+                Future<Boolean> future = executor.submit(indexTask);
+                futures.add(future);
             }
         }
+        return futures;
 //        if(file.isDirectory())   fileList = file.listFiles();
 //        else fileList = new File[]{file};
 
