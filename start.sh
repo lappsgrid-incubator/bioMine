@@ -6,6 +6,7 @@
 #fi
 
 LOG=/usr/local/biomine/biomine.log
+PID_FILE=/usr/local/biomine/biomine.pid
 
 while [[ -n "$1" ]] ; do
     case $1 in
@@ -16,7 +17,7 @@ while [[ -n "$1" ]] ; do
 	solr)
 	    cd /usr/local/solr-7.4.0
 	    echo "Starting solr"
-	    sudo -u solr bin/solr start -cloud -p 8983 
+	    sudo -u solr bin/solr start -cloud -p 8983 -m 8g
 	    cd -
 	    ;;
 	*)
@@ -28,8 +29,10 @@ while [[ -n "$1" ]] ; do
 done
 
 echo "Starting BioMine"
-sudo -u biomine nohup java -Xmx4G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
+nohup java -Xmx1G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
+echo $! > $PID_FILE
 
-tail -f /usr/local/biomine/biomine.log
+tail -f $LOG
+
 
 

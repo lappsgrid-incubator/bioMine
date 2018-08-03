@@ -9,7 +9,7 @@ function post {
 }
 
 function part1 {
-    for i in `seq 3 9` ; do
+    for i in `seq 1 9` ; do
 	post pubmed18n000$i.xml
     done
 }
