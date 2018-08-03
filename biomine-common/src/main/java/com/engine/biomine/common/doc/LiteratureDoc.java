@@ -35,7 +35,7 @@ public class LiteratureDoc extends BiomineDoc {
     Reference[] references;
     int year;
     String captions;
-
+    String path;
 
     @Override
     public SolrInputDocument toSolrDoc() {
@@ -49,6 +49,7 @@ public class LiteratureDoc extends BiomineDoc {
         doc.setField(FIELDS.pmc, getPmc());
         doc.setField(FIELDS.articleTitle, getTitle());
         doc.setField(FIELDS.captions, getCaptions());
+        doc.setField(FIELDS.path, getPath());
 
         Author[] authors = getAuthors();
         if (authors != null && authors.length > 0) {
@@ -119,6 +120,9 @@ public class LiteratureDoc extends BiomineDoc {
             case (FIELDS.year):
                 setYear((int) value);
                 break;
+            case (FIELDS.path):
+                setPath((String) value);
+                break;
             case (FIELDS.captions):
                 setCaptions((String)value);
                 break;
@@ -154,6 +158,8 @@ public class LiteratureDoc extends BiomineDoc {
                 return (int) getYear();
             case (FIELDS.captions):
                 return (String) getCaptions();
+            case (FIELDS.path):
+                return (String) getPath();
             default:
                 return "";
         }
@@ -170,6 +176,18 @@ public class LiteratureDoc extends BiomineDoc {
         String name = journalTitle + title;
         this.id = getMD5Hash(name);
     }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void setPath(String path)
+    {
+        this.path = path;
+    }
+
+
 
     public String getAbs() {
         return abs;

@@ -92,11 +92,23 @@ public class IndexManager {
 
         File[] fileList = null;
 
-        if(file.isDirectory())   fileList = file.listFiles();
-        else fileList = new File[]{file};
+        Deque<File> q = new ArrayDeque<File>();
+        q.addLast(file);
+        while (!q.isEmpty()) {
+            File entry = q.removeLast();
+            if (entry.isDirectory()) {
+                for (File child : entry.listFiles()) {
+                    q.addLast(child);
+                }
+            }
+            else {
+                IndexDocsTask indexTask = new IndexDocsTask(this, new File[] {entry}, deleteFile, collection, indexerStats);
+                executor.submit(indexTask);
+            }
+        }
+//        if(file.isDirectory())   fileList = file.listFiles();
+//        else fileList = new File[]{file};
 
-        IndexDocsTask indexTask = new IndexDocsTask(this, fileList, deleteFile, collection, indexerStats);
-        executor.submit(indexTask);
 
         //count the number of files to process
 //        DocCounterTask countDocumentTask = new DocCounterTask(this, fileList, indexerStats);

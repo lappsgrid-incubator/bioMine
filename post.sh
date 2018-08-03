@@ -16,7 +16,7 @@ function part1 {
 
 function part2 {
     for i in `seq 10 99` ; do
-	post pubmed18n000$i.xml
+	post pubmed18n00$i.xml
     done
 }
 

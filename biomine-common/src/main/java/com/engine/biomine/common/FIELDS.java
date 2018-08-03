@@ -6,6 +6,8 @@ import java.util.List;
 
 public class FIELDS {
 
+    public static final String path = "path";
+
     public static final String id = "id";
     public static final String ji = "ji";
     public static final String ui = "ui";
