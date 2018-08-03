@@ -17,7 +17,7 @@ import java.util.Stack;
  *
  */
 @Command(name = "biomine-cli",
-		description = "Recrsively scan a directory tree and index PubMed or PubMed Central articles found.",
+		description = "Recrsively scan a directory tree and index the Pubmed or PubmedCentral articles found.",
 		optionListHeading = "OPTIONS\n",
 		sortOptions = false,
 		footer = "Copyright 2018 The Language Applications Grid"
@@ -115,8 +115,17 @@ public class Main implements Runnable
 
 //		CommandLine.run(new Main(), args);
 		Main app = new Main();
-		CommandLine command = new CommandLine(app);
-		command.parse(args);
+		CommandLine command = null;
+		try {
+			command = new CommandLine(app);
+			command.parse(args);
+		}
+		catch (CommandLine.ParameterException e) {
+			System.out.println(e.getMessage());
+			command.usage(System.out);
+			return;
+		}
+
 		if (command.isVersionHelpRequested()) {
 			System.out.println("bioMine CLI Indexer v" + Version.getVersion());
 			System.out.printf("Copyright %c 2018 The Lanugage Applications Grid\n\n", 169);
