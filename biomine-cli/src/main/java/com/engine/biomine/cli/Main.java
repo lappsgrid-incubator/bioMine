@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -61,38 +63,53 @@ public class Main implements Runnable
 			return;
 		}
 		indexer = new IndexManager();
-		index(root);
-		IndexerStatus status = indexer.getStatus();
-		long n = status.getNbDocsToProcess();
-		while (n > 0) {
-			System.out.printf("There are %d documents to process.\n", n);
-			try
-			{
-				Thread.sleep(30000);
-				n = status.getNbDocsToProcess();
-			}
-			catch (InterruptedException e)
-			{
-				System.out.println("Processing has been interrupted.");
-				// Signal the while loop to terminate.
-				n = 0;
+		List<Future<Boolean>> tasks = index(root);
+		try {
+			for (Future<Boolean> task : tasks) {
+				task.get();
 			}
 		}
-		System.out.println("Done.");
+		catch (InterruptedException e) {
+			System.out.println("Task was interrupted.");
+			Thread.currentThread().interrupt();;
+		}
+		catch (ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+		finally {
+			System.out.println("Done.");
+		}
+//		IndexerStatus status = indexer.getStatus();
+//		long n = status.getNbDocsToProcess();
+//		while (n > 0) {
+//			System.out.printf("There are %d documents to process.\n", n);
+//			try
+//			{
+//				Thread.sleep(30000);
+//				n = status.getNbDocsToProcess();
+//			}
+//			catch (InterruptedException e)
+//			{
+//				System.out.println("Processing has been interrupted.");
+//				// Signal the while loop to terminate.
+//				n = 0;
+//			}
+//		}
 	}
 
-	private void index(File root) {
+	private List<Future<Boolean>> index(File root) {
 		Deque<File> stack = new ArrayDeque<>();
-		int count = 0;
 		stack.push(root);
+		List<Future<Boolean>> tasks = new ArrayList<>();
 		while (!stack.isEmpty()) {
 			File entry = stack.pop();
 			if (accept(entry)) {
 				System.out.println("Indexing " + entry.getPath());
-				indexer.pushData(entry, false, "literature");
-				if (++count > size) {
+				List<Future<Boolean>> futures = indexer.pushData(entry, false, "literature");
+				tasks.addAll(futures);
+				if (tasks.size() > size) {
 					// User specified limit has been reached.
-					return;
+					return tasks;
 				}
 			}
 			else if (entry.isDirectory()) {
@@ -101,6 +118,7 @@ public class Main implements Runnable
 				}
 			}
 		}
+		return tasks;
 	}
 
 	private boolean accept(File file) {
