@@ -16,3 +16,7 @@ log/
 solr/*.out
 .bash_history
 *~
+
+VERSION
+biomine-cli/src/main/java/**/Version.java
+

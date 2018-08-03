@@ -18,7 +18,7 @@ import java.util.Stack;
  */
 @Command(name = "biomine-cli",
 		description = "Recrsively scan a directory tree and index PubMed or PubMed Central articles found.",
-		optionListHeading = "OPTIONS",
+		optionListHeading = "OPTIONS\n",
 		sortOptions = false,
 		footer = "Copyright 2018 The Language Applications Grid"
 )
@@ -35,7 +35,19 @@ public class Main implements Runnable
 			description = "number of files to process")
 	private int size = Integer.MAX_VALUE;
 
-	private IndexManager indexer = new IndexManager();
+	@Option(names = {"-v", "--version"},
+			paramLabel = "VERSION",
+			versionHelp = true,
+			description = "print program version and exit")
+	private boolean showVersion;
+
+	@Option(names = {"-h", "--help"},
+			paramLabel = "HELP",
+			usageHelp = true,
+			description = "print this help message.")
+	private boolean showHelp;
+
+	private IndexManager indexer; // = new IndexManager();
 
 	public Main()
 	{
@@ -48,6 +60,7 @@ public class Main implements Runnable
 			System.out.println("That path does not exist.");
 			return;
 		}
+		indexer = new IndexManager();
 		index(root);
 		IndexerStatus status = indexer.getStatus();
 		long n = status.getNbDocsToProcess();
@@ -99,6 +112,20 @@ public class Main implements Runnable
 	}
 
 	public static void main(String[] args) {
-		CommandLine.run(new Main(), args);
+
+//		CommandLine.run(new Main(), args);
+		Main app = new Main();
+		CommandLine command = new CommandLine(app);
+		command.parse(args);
+		if (command.isVersionHelpRequested()) {
+			System.out.println("bioMine CLI Indexer v" + Version.getVersion());
+			System.out.printf("Copyright %c 2018 The Lanugage Applications Grid\n\n", 169);
+			return;
+		}
+		if (command.isUsageHelpRequested()) {
+			command.usage(System.out);
+			return;
+		}
+		app.run();
 	}
 }
