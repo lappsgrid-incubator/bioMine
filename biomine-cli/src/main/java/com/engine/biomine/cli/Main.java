@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 )
 public class Main implements Runnable
 {
+	private static final String DEFAULT_COLLECTION = "literature";
 //	@Option(names={"-p", "--path"},
 //			required = true,
 //			paramLabel = "directory",
@@ -70,6 +71,10 @@ public class Main implements Runnable
 		if (paths.size() == 0) {
 			System.out.println("No paths to index.");
 			return;
+		}
+		if (collection == null) {
+			System.out.println("Using default literature collection.");
+			collection = DEFAULT_COLLECTION;
 		}
 		indexer = new IndexManager();
 		for (String path : paths) {
@@ -138,13 +143,14 @@ public class Main implements Runnable
 		}
 		else {
 			System.out.println("Indexing " + root.getPath());
-			List<Future<Boolean>> tasks = indexer.pushData(root, false, "literatoru");
+			List<Future<Boolean>> tasks = indexer.pushData(root, false, collection);
 			System.out.printf("Waiting for %d tasks\n", tasks.size());
 			for (Future<Boolean> task : tasks) {
 				task.get();
 			}
 		}
 	}
+
 	private List<Future<Boolean>> indexWithStack(File root) {
 		Deque<File> stack = new ArrayDeque<>();
 		stack.push(root);
