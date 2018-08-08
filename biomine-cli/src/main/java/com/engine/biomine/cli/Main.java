@@ -68,7 +68,7 @@ public class Main implements Runnable
 	}
 
 	public void run() {
-		if (paths.size() == 0) {
+		if (paths == null || paths.size() == 0) {
 			System.out.println("No paths to index.");
 			return;
 		}
