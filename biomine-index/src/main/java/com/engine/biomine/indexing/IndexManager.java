@@ -59,12 +59,9 @@ public class IndexManager {
 
     public IndexManager() {
         props = Configs.getInstance().getProps();
-//        serverPath = props.getProperty("server.url");
         this.serverPath  = new ArrayList<>(Arrays.asList(props.getProperty("server.url").split(",")));
         logger.info("Using Solr server {}", serverPath);
         this.solrClient = new CloudSolrClient.Builder(serverPath).build();
-
-//        this.solrClient = new CloudSolrClient.Builder().withZkHost(serverPath).build();
 
         String collection = props.getProperty("collections");
         defaultCollection = (collection.contains(",")) ? collection.substring(0, collection.indexOf(",")) : collection;
@@ -271,6 +268,7 @@ public class IndexManager {
         } else {
             count =1;
         }
+
         return count;
     }
     //------------------------------------------------
