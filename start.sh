@@ -29,7 +29,7 @@ while [[ -n "$1" ]] ; do
 done
 
 echo "Starting BioMine"
-nohup java -Xmx1G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
+nohup java -Xmx8G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
 echo $! > $PID_FILE
 
 tail -f $LOG
