@@ -91,7 +91,6 @@ public class IndexManager {
      */
     public List<Future<Boolean>> pushData(File file, boolean deleteFile, String collection) {
         logger.info("Pushing data for {}", file.getPath());
-        //File[] fileList = null;
         List<Future<Boolean>> futures = new ArrayList<>();
 
         Deque<File> q = new ArrayDeque<File>();

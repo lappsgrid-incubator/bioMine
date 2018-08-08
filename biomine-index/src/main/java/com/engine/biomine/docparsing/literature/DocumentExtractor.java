@@ -237,6 +237,7 @@ public abstract class DocumentExtractor {
 
     protected String idNormalizer(String id){
 
+        /*
         id = id.replace(".","");
 
         if(id.toLowerCase().contains("pmid")){
@@ -248,7 +249,7 @@ public abstract class DocumentExtractor {
             id = id.toLowerCase().replace("pmcid","");
             id = id.toLowerCase().replace("pmc","");
         }
-
+        */
         return id;
     }
 
