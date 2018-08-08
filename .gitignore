@@ -1,7 +1,7 @@
-/target/
+target/
 .classpath
 .project
-/.settings/
+.settings/
 
 # IntelliJ
 *.iml

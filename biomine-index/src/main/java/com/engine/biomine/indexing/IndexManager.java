@@ -58,7 +58,17 @@ public class IndexManager {
 
     public IndexManager() {
         props = Configs.getInstance().getProps();
-        this.serverPath  = new ArrayList<>(Arrays.asList(props.getProperty("server.url").split(",")));
+        //this.serverPath  = new ArrayList<>(Arrays.asList(props.getProperty("server.url").split(",")));
+        String[] urls = props.getProperty("server.url").split(",");
+        this.serverPath = new ArrayList<>(urls.length);
+        for (String url : urls) {
+            if (url.startsWith("http")) {
+                this.serverPath.add(url);
+            }
+            else {
+                this.serverPath.add("http://" + url);
+            }
+        }
         logger.info("Using Solr server {}", serverPath);
         this.solrClient = new CloudSolrClient.Builder(serverPath).build();
 
