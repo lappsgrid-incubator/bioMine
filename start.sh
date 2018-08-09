@@ -5,8 +5,8 @@
 #    exit 1
 #fi
 
-LOG=/usr/local/biomine/biomine.log
-PID_FILE=/usr/local/biomine/biomine.pid
+LOG=/var/data/biomine/biomine.log
+PID_FILE=/var/data/biomine/biomine.pid
 
 if [[ -e $PID_FILE ]] ; then
     pid=$(cat $PID_FILE)
@@ -21,7 +21,7 @@ while [[ -n "$1" ]] ; do
 	    if [[ -e $LOG ]] ; then rm $LOG ; fi
 	    ;;
 	solr)
-	    cd /usr/local/solr-7.4.0
+	    cd /var/data/solr-7.4.0
 	    echo "Starting solr"
 	    sudo -u solr bin/solr start -cloud -p 8983 -m 8g
 	    cd -
@@ -35,7 +35,7 @@ while [[ -n "$1" ]] ; do
 done
 
 echo "Starting BioMine"
-nohup java -Xmx1G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > /usr/local/biomine/biomine.log &
+nohup java -Xmx1G -Dconfig.properties -jar ./biomine-service/target/biomine-service-1.0-SNAPSHOT.jar > $LOG &
 echo $! > $PID_FILE
 
 tail -f $LOG
