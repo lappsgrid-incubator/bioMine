@@ -8,6 +8,12 @@
 LOG=/usr/local/biomine/biomine.log
 PID_FILE=/usr/local/biomine/biomine.pid
 
+if [[ -e $PID_FILE ]] ; then
+    pid=$(cat $PID_FILE)
+    echo "It appears the bioMine server is already running ($pid)"
+    exit 1
+fi
+
 while [[ -n "$1" ]] ; do
     case $1 in
 	clean)
